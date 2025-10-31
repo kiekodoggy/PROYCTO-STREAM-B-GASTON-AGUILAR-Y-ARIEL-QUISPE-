@@ -1,0 +1,317 @@
+
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Práctica — Team Spirit Hub</title>
+<link rel="stylesheet" href="styles.css">
+</head><body>
+<header class="appbar">
+  <div class="logo-wrap">
+    <img src="https://cdnsteam.cdnhell.com/570/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KW1Zwwo4NUX4oFNJcJLvzC7w9QIJ43pw8SX0nRVOuj6J6DHAoldF0E7uLqPwJh3v_HdjJ94N2kk4XFlK-kZ7qDkzxT7JQm0-_Hpo_0iQG1qhBoZ2qico-WegU5YlzSqAK9kvCv28FWxKBkng/360fx360f.png" alt="Team Spirit Logo" class="logo-img">
+    <div class="brand-block">
+      <span class="brand-title">CS2</span>
+      <span class="brand-sub">Hub</span>
+    </div>
+    <nav class="nav">
+      <a class="btn" href="index.html">Inicio</a>
+      <a class="btn" href="jugadores.html">Jugadores</a>
+      <a class="btn gold" href="practica.html">Práctica</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container narrow">
+  <h2>Práctica interactiva</h2>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="aim">Aim</button>
+    <button class="tab-btn" data-tab="reaction">Reacción</button>
+    <button class="tab-btn" data-tab="recoil">Recoil</button>
+    <button class="tab-btn" data-tab="quiz">V/F</button>
+  </div>
+
+  <!-- AIM -->
+  <section id="tab-aim" class="section active card">
+    <h3>🎯 Aim</h3>
+    <p class="small">Click sobre el objetivo apenas aparezca. Ajusta tamaño/duración.</p>
+    <div class="row">
+      <button class="btn" id="aimStart">Iniciar</button>
+      <button class="btn" id="aimStop">Detener</button>
+      <select class="input" id="aimDuration"><option value="30">30s</option><option value="60" selected>60s</option></select>
+      <select class="input" id="aimSize"><option value="30" selected>Medio</option><option value="22">Chico</option><option value="16">Micro</option></select>
+    </div>
+    <div class="arena" id="aimArena"></div>
+    <div class="row">
+      <div class="small">Aciertos: <b id="aimHits">0</b></div>
+      <div class="small">Fallos: <b id="aimMiss">0</b></div>
+      <div class="small">Precisión: <b id="aimAcc">0%</b></div>
+      <div class="small">Tiempo: <b id="aimTime">0</b>s</div>
+    </div>
+  </section>
+
+  <!-- REACTION -->
+  <section id="tab-reaction" class="section card">
+    <h3>⚡ Reacción</h3>
+    <div class="arena" id="reactionArena" style="display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <div id="reactionBox" class="card" style="padding:14px;text-align:center;">Click para empezar</div>
+    </div>
+    <div class="row">
+      <div class="small">Último: <b id="rxLast">—</b> ms</div>
+      <div class="small">Mejor: <b id="rxBest">—</b> ms</div>
+      <div class="small">Promedio(5): <b id="rxAvg">—</b> ms</div>
+    </div>
+  </section>
+
+  <!-- RECOIL -->
+  <section id="tab-recoil" class="section card">
+    <h3>🌀 Recoil</h3>
+    <p class="small">Mantén el cursor sobre el punto rojo siguiendo el patrón. Patrón acotado con clamp.</p>
+    <div class="row">
+      <button class="btn" id="recoilStart">Iniciar</button>
+      <button class="btn" id="recoilStop">Detener</button>
+      <select class="input" id="recoilWeapon"><option value="ak" selected>AK</option><option value="m4">M4</option></select>
+      <select class="input" id="recoilDuration"><option value="10">10s</option><option value="15" selected>15s</option><option value="20">20s</option></select>
+    </div>
+    <div class="arena" id="recoilArena">
+      <div id="recoilDot" class="recoil-dot"></div>
+      <div id="recoilCross" class="crosshair"></div>
+    </div>
+    <div class="row">
+      <div class="small">Control: <b id="recoilCtrl">0%</b></div>
+      <div class="small">Tiempo: <b id="recoilTime">0</b>s</div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="tab-quiz" class="section card">
+    <h3>❓ Verdadero/Falso con justificación</h3>
+    <div id="quizArea"></div>
+    <div class="row">
+      <button class="btn" id="quizNew">Nuevas preguntas</button>
+      <button class="btn" id="quizGrade">Corregir</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="container footer small">Entrena como Team Spirit.</footer>
+
+<script>
+// Tabs
+(function(){
+  const btns = document.querySelectorAll('.tab-btn');
+  btns.forEach(b=> b.addEventListener('click', ()=>{
+    btns.forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    const tab = b.getAttribute('data-tab');
+    document.querySelectorAll('.section').forEach(s=> s.classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
+  }));
+})();
+
+// AIM
+(function(){
+  const arena = document.getElementById('aimArena');
+  const start = document.getElementById('aimStart');
+  const stop = document.getElementById('aimStop');
+  const durSel = document.getElementById('aimDuration');
+  const sizeSel= document.getElementById('aimSize');
+  const hitsEl = document.getElementById('aimHits');
+  const missEl = document.getElementById('aimMiss');
+  const accEl  = document.getElementById('aimAcc');
+  const timeEl = document.getElementById('aimTime');
+  let running=false, timer=null, endAt=0, hits=0, miss=0, tgt=null;
+
+  function rnd(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function spawn(){
+    arena.innerHTML='';
+    const size = parseInt(sizeSel.value,10);
+    const pad = 8, w=arena.clientWidth, h=arena.clientHeight;
+    const x = rnd(pad, w - size - pad);
+    const y = rnd(pad, h - size - pad);
+    tgt = document.createElement('div');
+    tgt.className='target';
+    tgt.style.width=size+'px'; tgt.style.height=size+'px';
+    tgt.style.left=x+'px'; tgt.style.top=y+'px';
+    tgt.addEventListener('click',(e)=>{ e.stopPropagation(); hits++; hitsEl.textContent=hits; spawn(); });
+    arena.appendChild(tgt);
+  }
+  function updateAcc(){ const s=hits+miss; accEl.textContent = s? Math.round(hits/s*100)+'%':'0%'; }
+  function startGame(){
+    if(running) return; running=true;
+    hits=0; miss=0; hitsEl.textContent='0'; missEl.textContent='0'; accEl.textContent='0%'; timeEl.textContent='0';
+    spawn();
+    arena.onclick=()=>{ miss++; missEl.textContent=miss; updateAcc(); };
+    endAt = Date.now() + parseInt(durSel.value,10)*1000;
+    timer = setInterval(()=>{
+      const left = Math.max(0, Math.ceil((endAt - Date.now())/1000));
+      timeEl.textContent = left; if(Date.now()>=endAt) stopGame();
+    }, 100);
+  }
+  function stopGame(){ running=false; clearInterval(timer); arena.onclick=null; }
+  start.addEventListener('click', startGame);
+  stop.addEventListener('click', stopGame);
+  hitsEl.addEventListener('DOMSubtreeModified', updateAcc);
+  missEl.addEventListener('DOMSubtreeModified', updateAcc);
+})();
+
+// Reaction
+(function(){
+  const box=document.getElementById('reactionBox');
+  const last=document.getElementById('rxLast'), best=document.getElementById('rxBest'), avg=document.getElementById('rxAvg');
+  let wait=false, startT=0, times=[];
+  function reset(){ box.textContent='Espera...'; box.style.background=''; }
+  box.addEventListener('click', ()=>{
+    if(!wait){
+      reset(); wait=true;
+      setTimeout(()=>{ box.textContent='¡YA!'; box.style.background='rgba(46,204,113,.25)'; startT=performance.now(); }, Math.random()*1500+700);
+    }else{
+      const t = Math.round(performance.now()-startT);
+      last.textContent=t;
+      times.unshift(t); times=times.slice(0,5);
+      best.textContent = Math.min(...times);
+      avg.textContent  = Math.round(times.reduce((a,b)=>a+b,0)/times.length);
+      wait=false; box.textContent='Click para repetir'; box.style.background='';
+    }
+  });
+})();
+
+// Recoil (bounded + clamp)
+(function(){
+  const arena = document.getElementById('recoilArena');
+  const dot   = document.getElementById('recoilDot');
+  const cross = document.getElementById('recoilCross');
+  const start = document.getElementById('recoilStart');
+  const stop  = document.getElementById('recoilStop');
+  const weaponSel = document.getElementById('recoilWeapon');
+  const durSel    = document.getElementById('recoilDuration');
+  const ctrlEl    = document.getElementById('recoilCtrl');
+  const timeEl    = document.getElementById('recoilTime');
+
+  let running=false, raf=null, startAt=0, duration=0;
+  let cx=0, cy=0, mouseX=0, mouseY=0, pattern=[];
+
+  function layout(){ const r=arena.getBoundingClientRect(); cx=r.width/2; cy=r.height/2; cross.style.left=cx+'px'; cross.style.top=cy+'px'; }
+  window.addEventListener('resize', layout); layout();
+
+  arena.addEventListener('mousemove',(e)=>{
+    const r=arena.getBoundingClientRect();
+    mouseX=e.clientX-r.left; mouseY=e.clientY-r.top;
+    cross.style.left=mouseX+'px'; cross.style.top=mouseY+'px';
+  });
+
+  function buildPattern(kind, steps){
+    const H = Math.min(arena.clientHeight||360, 360);
+    const maxUp = (kind==='ak') ? 0.32*H : 0.24*H; // bounded
+    const pts=[];
+    for(let i=0;i<steps;i++){
+      const t = i/(steps-1);
+      const rise = t<0.35 ? (t/0.35) : 1;       // early climb then plateau
+      const y = -maxUp*rise;
+      const swayMag = (kind==='ak') ? 12 : 8;   // lateral sway
+      const sway = Math.sin(i/5) * swayMag + Math.sin(i/11) * (swayMag*0.4);
+      pts.push({x:sway, y:y});
+    }
+    return pts;
+  }
+
+  function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+  function startDrill(){
+    if(running) return;
+    running=true;
+    duration = parseInt(durSel.value,10)*1000;
+    startAt = performance.now();
+    pattern = buildPattern(weaponSel.value, Math.max(30, Math.floor(duration/16)));
+    let idx=0, overlapped=0, samples=0;
+
+    function step(){
+      const t = performance.now() - startAt;
+      const left = Math.max(0, Math.ceil((duration - t)/1000));
+      timeEl.textContent = left;
+      if(t>=duration){ finish(); return; }
+
+      const p = pattern[Math.min(idx, pattern.length-1)];
+      let x = cx + p.x;
+      let y = cy + p.y;
+
+      x = clamp(x, 8, arena.clientWidth - 8);
+      y = clamp(y, 8, arena.clientHeight - 8);
+
+      dot.style.left = (x-8)+'px';
+      dot.style.top  = (y-8)+'px';
+
+      const dx = (mouseX - x), dy = (mouseY - y);
+      const dist = Math.hypot(dx,dy);
+      samples++; if(dist<=20) overlapped++;
+      ctrlEl.textContent = Math.round((overlapped/samples)*100) + '%';
+
+      idx++; raf = requestAnimationFrame(step);
+    }
+    step();
+  }
+
+  function finish(){ running=false; if(raf) cancelAnimationFrame(raf); timeEl.textContent='0'; }
+  start.addEventListener('click', ()=>{ layout(); startDrill(); });
+  stop .addEventListener('click', finish);
+})();
+
+// Quiz V/F
+(function(){
+  const bank = [
+    {q:'Mirage tiene ramp y palace hacia A.', a:true,  e:'Accesos típicos a site A.'},
+    {q:'m0NESY es rifler principal.',        a:false, e:'Es AWPer.'},
+    {q:'Inferno banana conecta con B.',      a:true,  e:'Conecta zona T hacia B.'},
+    {q:'Nuke: Heaven está debajo de Hell.',  a:false, e:'Heaven arriba, Hell planta baja.'},
+    {q:'Un smoke de CS2 dura ~18s.',         a:true,  e:'Aproximadamente 18 segundos.'},
+    {q:'NiKo es famoso por AWP, no por rifle.', a:false, e:'Su fama es por rifle y spray control.'},
+    {q:'Anubis es un mapa con nieve.',       a:false, e:'Ambientación egipcia/acuática.'},
+  ];
+  const area = document.getElementById('quizArea');
+  const btnNew = document.getElementById('quizNew');
+  const btnGrade = document.getElementById('quizGrade');
+  let current=[];
+
+  function draw(){
+    const pool = bank.slice(); current=[];
+    for(let i=0;i<5;i++){ const idx = Math.floor(Math.random()*pool.length); current.push(pool.splice(idx,1)[0]); }
+    area.innerHTML = current.map((it, i)=>`
+      <div class="quiz-card" data-idx="${i}">
+        <div><b>P${i+1}.</b> ${it.q}</div>
+        <div class="row" style="margin-top:6px">
+          <button class="btn" data-a="true">Verdadero</button>
+          <button class="btn" data-a="false">Falso</button>
+        </div>
+        <textarea class="input" rows="2" placeholder="Justificación breve..."></textarea>
+        <div class="small feedback"></div>
+      </div>`).join('');
+    area.querySelectorAll('.quiz-card .btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const card = btn.closest('.quiz-card');
+        card.setAttribute('data-user', btn.getAttribute('data-a'));
+        card.querySelectorAll('.btn').forEach(b=> b.classList.remove('gold'));
+        btn.classList.add('gold');
+      });
+    });
+  }
+
+  function grade(){
+    area.querySelectorAll('.quiz-card').forEach((card,i)=>{
+      const user = card.getAttribute('data-user');
+      const fb = card.querySelector('.feedback');
+      const just = card.querySelector('textarea').value.trim();
+      if(user===null || user===undefined){
+        fb.innerHTML = '<span class="incorrect">Sin respuesta.</span> ' + current[i].e;
+        return;
+      }
+      const ok = String(current[i].a)===user;
+      fb.innerHTML = (ok? '<span class="correct">Correcto.</span> ' : '<span class="incorrect">Incorrecto.</span> ')
+        + (just? ('Tu justificación: '+just+'. ') : '')
+        + 'Explicación: ' + current[i].e;
+    });
+  }
+
+  btnNew.addEventListener('click', draw);
+  btnGrade.addEventListener('click', grade);
+  draw();
+})();
+</script>
+</body></html>

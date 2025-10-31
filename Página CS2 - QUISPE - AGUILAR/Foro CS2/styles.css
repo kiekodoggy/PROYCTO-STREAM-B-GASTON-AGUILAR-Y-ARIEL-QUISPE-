@@ -1,0 +1,167 @@
+
+/* === Team Spirit Theme === */
+:root{
+  --bg:#0a0a0a;          /* near black */
+  --panel:#121317;       /* dark panel */
+  --text:#f5f7fa;        /* near white */
+  --muted:#aeb3bd;       /* muted gray */
+  --border:#23262f;      /* subtle outline */
+  --gold:#ffd84d;        /* Team Spirit gold */
+  --gold-2:#ffca1a;      /* deeper gold */
+  --accent:#ffffff;      /* white accents */
+  --danger:#ef4444;
+  --ok:#22c55e;
+  --shadow: 0 18px 50px rgba(255, 216, 77, .12);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;line-height:1.45}
+
+/* Layout */
+.container{max-width:1200px;margin:0 auto;padding:24px}
+.narrow{max-width:980px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;gap:16px}
+.grid.cards{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+
+/* App bar */
+.appbar{position:sticky;top:0;z-index:40;background:rgba(10,10,10,.75);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border)}
+.appbar .container{display:flex;align-items:center;gap:16px;padding:14px 24px}
+.appbar .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.4px}
+.logo{width:28px;height:28px;border-radius:6px;background:conic-gradient(from 0deg,#ffec9c,#ffd84d,#ffca1a,#ffe27a);
+  box-shadow:0 0 0 2px #2b2b2b;display:inline-block}
+.appbar a{color:var(--text);text-decoration:none}
+.appbar .nav{margin-left:auto;display:flex;gap:10px}
+
+/* Buttons & Inputs */
+.btn{border:1px solid var(--border);border-radius:12px;padding:9px 12px;background:linear-gradient(180deg, #1a1b22, #121317);
+  color:var(--text);cursor:pointer;transition:.2s;border-color:#2b2e38}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn.gold{background:linear-gradient(160deg, var(--gold), var(--gold-2)); color:#1b1b1b; border-color:transparent}
+.btn.gold:hover{filter:brightness(1.05)}
+.input{border:1px solid var(--border);border-radius:10px;background:#0f1116;color:var(--text);padding:8px 10px;min-height:38px}
+
+/* Cards */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:16px}
+
+/* Typography */
+h1,h2,h3{margin:10px 0}
+h1{font-size:28px} h2{font-size:22px} h3{font-size:18px}
+.small{color:var(--muted);font-size:14px}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:center}
+.hero .banner{height:260px;border-radius:18px;border:1px solid var(--border);background:
+  radial-gradient(1200px 260px at 20% 0%, rgba(255,216,77,.12), transparent 60%),
+  linear-gradient(180deg,#13151b,#0f1015);
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--gold);color:var(--gold);padding:6px 10px;border-radius:999px}
+
+/* Players */
+.player-card{display:flex;flex-direction:column;gap:12px}
+.player-card .media{aspect-ratio:16/9;border-radius:12px;border:1px solid var(--border);overflow:hidden;position:relative;background:#0f1015}
+.player-card .media img{width:100%;height:100%;object-fit:cover;display:block}
+.player-card .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.kpi{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);padding:4px 8px;border-radius:999px;background:#0f1116}
+.kpi .dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.trophies{display:flex;gap:6px}
+.trophies .cup{width:20px;height:20px;border-radius:4px;background:linear-gradient(160deg,var(--gold),var(--gold-2));box-shadow:0 0 0 1px #7d6720 inset}
+.socials{display:flex;gap:8px;flex-wrap:wrap}
+.socials a{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);padding:6px 10px;border-radius:10px}
+.socials a:hover{border-color:var(--gold);color:var(--gold)}
+.icon{width:16px;height:16px;display:inline-block}
+
+/* Video cards */
+.video-card{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.video-card .frame{position:relative;height:230px}
+.video-card .frame iframe, .video-card .frame video { position:absolute; inset:0; width:100%; height:100%; border:0; }
+
+/* Modal */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#0008;padding:20px;z-index:50}
+.modal.open{display:flex}
+.modal .box{background:var(--panel);border:1px solid var(--border);border-radius:16px;max-width:min(1000px,92vw);width:100%}
+.modal .head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border)}
+.modal .frame{position:relative;height:min(65vh,560px)}
+.modal .frame iframe, .modal .frame video {position:absolute;inset:0;width:100%;height:100%;border:0}
+
+/* Practice */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab-btn{padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--panel);cursor:pointer}
+.tab-btn.active{border-color:var(--gold);color:var(--gold)}
+.section{display:none}.section.active{display:block}
+.arena{position:relative;border:1px dashed var(--border);border-radius:12px;height:360px;background:linear-gradient(180deg,#13151b,#0d0f13);overflow:hidden}
+.target{position:absolute;border-radius:50%;background:var(--gold);width:30px;height:30px;cursor:crosshair;transition:transform .06s ease}
+.target:hover{transform:scale(1.05)}
+.recoil-dot{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 2px rgba(239,68,68,.32)}
+.crosshair{position:absolute;width:42px;height:42px;border:2px solid #e5e7eb;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%)}
+.quiz-card{border:1px solid var(--border);border-radius:12px;padding:10px;margin:10px 0;background:#10121a}
+.correct{color:var(--ok)}.incorrect{color:var(--danger)}
+
+/* Footer */
+.footer{border-top:1px solid var(--border);margin-top:16px}
+
+/* ====== HEADER / APPBAR ====== */
+.appbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 28px;
+  background: #0f1116;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-img {
+  width: 42px;      /* ← más chico */
+  height: 42px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: transparent;
+}
+
+.brand-block {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-title {
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+
+.brand-sub {
+  color: #d4af37;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.menu {
+  display: flex;
+  gap: 10px;
+}
+
+.menu .btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  padding: 7px 14px;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 0.78rem;
+}
+
+.menu .btn.gold {
+  background: #f5b82f;
+  color: #000;
+  font-weight: 600;
+}
